@@ -1,0 +1,40 @@
+#!/bin/bash
+
+	#####################################
+	#  	       Scans WiFi	    #
+	#####################################
+
+DEVICE="wlp2s0"
+
+# lazy gather information about each spot
+SPOTS=($(sudo iwlist "$DEVICE" scan | grep \ESSID: ))
+CHANNEL=($(sudo iwlist "$DEVICE" scan | grep \Channel: ))
+
+clear
+
+# formatted, detailed little nicely output
+FIRST=1
+c=0
+for i in "${SPOTS[@]}"
+do
+	if [[ $i == *"ESSID"* ]]
+	then
+		if [[ $FIRST == 0 ]]
+		then
+			echo -e "\e[0m"
+			echo -e "---------------------------------"
+			echo -e "${CHANNEL[$c]}"
+		fi
+		i=$(echo "$i" | tr -d "ESSID:\"")
+		echo -e "\e[1m"
+		echo "$i" | tr -d "\n"
+	else
+		echo "$i" | tr -d "\n" | tr -d "\""
+	fi
+	FIRST=0
+	c=$((c+1))
+done
+echo -e "\n"
+
+
+echo -e "$CHANNEL\e[0m"

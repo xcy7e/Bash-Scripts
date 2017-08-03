@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# show free disk space on specific partition
+echo -en "\e[94m\n"
+echo -en "\e[4m$                       TOTAL    USED  FREE     %       \e[0m\e[94m\n"
+echo -en "\e[1m"
+df -h | grep "fedora-root"	# change "fedora-root" to a unique substring of the partition name (first column in the result of "df -$
+echo -en "\n\e[0m"

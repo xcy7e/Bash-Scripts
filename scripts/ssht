@@ -1,0 +1,178 @@
+#!/bin/bash
+
+		clear
+
+sudo mkdir -p /usr/share/ssht/ && sudo touch /usr/share/ssht/last_destination_ip && sudo touch /usr/share/ssht/last_port && sudo touch /usr/share/ssht/last_usr
+
+sudo chmod 777 /usr/share/ssht/last_destination_ip
+sudo chmod 777 /usr/share/ssht/last_port
+sudo chmod 777 /usr/share/ssht/last_usr
+
+lastDest=$(cat /usr/share/ssht/last_destination_ip)
+lastPort=$(cat /usr/share/ssht/last_port)
+lastUser=$(cat /usr/share/ssht/last_usr)
+
+echo ""
+echo -en "\e[1m"
+echo -en " "
+sleep 0.4
+echo -en "E"
+sleep 0.1
+echo -en "s"
+sleep 0.06
+echo -en "t"
+sleep 0.09
+echo -en "a"
+sleep 0.12
+echo -en "b"
+sleep 0.04
+echo -en "l"
+sleep 0.06
+echo -en "i"
+sleep 0.03
+echo -en "s"
+sleep 0.09
+echo -en "h"
+sleep 0.06
+echo -en " "
+sleep 0.06
+echo -en "S"
+sleep 0.10
+echo -en "S"
+sleep 0.06
+echo -en "H"
+sleep 0.04
+echo -en "-"
+sleep 0.02
+echo -en "T"
+sleep 0.08
+echo -en "u"
+sleep 0.06
+echo -en "n"
+sleep 0.05
+echo -en "n"
+sleep 0.06
+echo -en "e"
+sleep 0.11
+echo -en "l"
+sleep 0.06
+echo -en "\e[0m\n\n"
+
+
+
+# loading spinner
+spinner()
+{
+
+    if [ -z "$1" ]
+    then
+        max=20
+    else
+        max="$1"
+    fi
+    if [ -z "$2" ]
+    then
+        delay=0.10
+    else
+        delay="$2"
+    fi
+
+
+    local i=0
+    local spinstr='/-\'
+    while [ $i -lt ${max} ]; do
+        local temp=${spinstr#?}
+        printf "%c " "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+        printf "\b\b\b\b\b\b"
+        i=$((i+1))
+    done
+    printf "    \b\b\b\b"
+}
+
+spinner 10
+
+
+# IP-Addr?
+if [ -z "$lastDest" ]
+then
+    lbl=""
+else
+    lbl=$' (\e[4m'"$lastDest"$'\e[0m/..)'
+fi
+
+if [ -z "$lastPort" ]
+then
+    portLbl=""
+else
+    portLbl=$'(\e[4m'"$lastPort"$'\e[0m/..)'
+fi
+
+if [ -z "$lastUser" ]
+then
+    userLbl=""
+else
+    userLbl=$'(\e[4m'"$lastUser"$'\e[0m/..)'
+fi
+
+read -p " IP$lbl: " IP
+read -p " Port $portLbl: " PORT
+read -p " User $userLbl: " USER
+
+if [ -z "$IP" ]
+then
+    IP=${lastDest}
+fi
+if [ -z "$PORT" ]
+then
+    PORT=${lastPort}
+fi
+if [ -z "$USER" ]
+then
+    USER=${lastUser}
+fi
+
+
+sudo echo $IP   > /usr/share/ssht/last_destination_ip
+sudo echo $PORT > /usr/share/ssht/last_port
+sudo echo $USER > /usr/share/ssht/last_usr
+
+spinner 5
+echo "---------------------------------------------------------------"
+# fork new ssh-socket in background
+sudo ssh -M -S ssht-socket -fnNT -L "$PORT":localhost:443 "$USER"@"$IP"
+echo "---------------------------------------------------------------"
+
+# check if SSH-Connection has been established
+MSOCK=$(sudo ssh -S ssht-socket -O check "$USER"@"$IP")
+if [[ $MSOCK == *"Master running"* ]]; then
+    # SUCCESS
+    read -p " Tunnel all network traffic over SSH-Tunnel? (y/\e[4mN\e[0m)" CHSYSPROX
+    case $CHSYSPROX in
+        y|Y)
+	  #change system-proxy
+	  export http_proxy=socks5://127.0.0.1:"$PORT"
+	  export https_proxy=socks5://127.0.0.1:"$PORT"
+	  ;;
+	*)
+    esac
+    # trap ctrl+c to send exit-request for socket before exiting script
+    trap ctrl_c INT
+    function ctrl_c() {
+        # send exit-request for ssh-socket
+	echo -e " > Exit SSH-Socket...\n"
+        sudo ssh -S ssht-socket -O "$USER"@"$IP"
+        echo -e "\e[1m Connection closed.\e[0m\n"
+    }
+
+    echo -e " Press Ctrl+C to exit script and properly close SSH-Connection Socket."
+    echo -e " \e[1m\e[32m connected.\e[0m"
+    # finish
+else
+    # FAIL
+    # send exit-request for socket anyways
+    sudo ssh -S ssht-socket -O "$USER"@"$IP"
+    echo -e "\n\e[1m\e[93mERR:\e[0m\e[1m Could not establish SSH-Connection for $IP\e[0m"
+    echo -e "\e[1m\e[31mAbort.\e[0m\n"
+fi

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# fix CakePHP's cache write error
+sudo setsebool -P httpd_unified 1

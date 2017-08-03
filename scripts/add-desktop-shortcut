@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Dialog to create a desktop shortcut
+
+echo -e "\n Create a	new desktop shortcut\n"
+read -p	" Name: " name
+read -p	" Alias: " alias
+read -p	" Exec:	" exec
+read -p	" Comment: " comment
+read -p	" Terminal(true/false):	" terminal
+read -p	" Icon:	" icon
+
+echo " "
+
+desktopdir=$(xdg-user-dir DESKTOP)
+cd "$desktopdir"
+filename="${name}.desktop"
+touch ${filename}
+
+echo "#!/usr/bin/env xdg-open" >> $filename
+echo "" >> $filename
+echo "[Desktop Entry]" >> $filename
+echo "Version=1.0" >> $filename
+echo "Exec=${exec}" >> $filename
+echo "Name=${name}" >> $filename
+echo "Icon=${icon}" >> $filename
+echo "GenericName=${alias}" >> $filename
+echo "Comment=${comment}" >> $filename
+echo "Encoding=UTF-8" >> $filename
+echo "Terminal=${terminal}" >> $filename
+echo "Type=Application" >> $filename
+echo "Name[de_DE]=$name" >> $filename
+
+echo -e "\e[32m \e[1m$filename\e[0m\e[32m created.\e[0m\n"
+

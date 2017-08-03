@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# run firefox with local socks5 proxy profile
+# socks5 localhost:1080
+# requires ssh-tunnel on port 1080
+# ssh -D 1080 user@server.com
+firefox -P "proxy_socks5_localhost_1080"
