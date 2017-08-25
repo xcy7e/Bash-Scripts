@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# free virtual memory by closing all daemons / processes that commonly autostart
+
+USEDRAMMBBEFORE=$(free -m | awk 'NR==2{printf "%s", $3,$2,$3*100/$2 }')
+##echo -e "$USEDRAMMBBEFORE"
+sudo echo -en "\n\e[2mClosing daemons \e[0m"
+sudo systemctl stop http > /dev/null 2>&1
+sudo systemctl stop metasploit > /dev/null 2>&1
+sudo systemctl stop docker > /dev/null 2>&1
+sudo systemctl stop mysqld > /dev/null 2>&1
+echo -en "[\e[92mOK\e[0m]\n"
+echo -en "\e[2mKilling processes \e[0m"
+sudo killall chrome > /dev/null 2>&1
+sudo killall java > /dev/null 2>&1
+sudo killall jvm > /dev/null 2>&1
+echo -en "[\e[92mOK\e[0m]\n"
+#echo -e "done."
+USEDRAMMBAFTER=$(free -m | awk 'NR==2{printf "%s", $3,$2,$3*100/$2 }')
+FREEDRAM=$((USEDRAMMBBEFORE-USEDRAMMBAFTER))
+echo -en "\e[36m+$FREEDRAM"
+echo -en "MB RAM\e[0m\n\n"
+##echo -e "$USEDRAMMBAFTER"
