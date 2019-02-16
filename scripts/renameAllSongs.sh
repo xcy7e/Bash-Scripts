@@ -1,14 +1,16 @@
 #!/bin/bash
 
-dir=$(pwd)
+#
+# Rename song-files in current directory by meta info and save as *.mp3
+# e. g. "ACDC - Hihgway to hell.mp3"
+#
 
 clear
-echo -e "\e[1m\e[33mRenaming songs based on meta-info\e[0m"
+echo -e "\e[1m\e[33mRename songs..\e[0m"
 
 for f in * ; do
    title=$(ffprobe "$f" 2>&1 | sed -E -n 's/^ *title *: (.*)/\1/p')
    artist=$(ffprobe "$f" 2>&1 | sed -E -n 's/^ *artist *: (.*)/\1/p')
-   #echo "$artist - $title.mp3"
    if [ ! -z "$title" ] && [ ! -z "$artist" ]; then
       mv "$f" "$artist - $title.mp3"
    fi
