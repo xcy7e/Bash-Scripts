@@ -11,7 +11,9 @@ status=$( echo $? )
 if [[ $status == 0 ]] ; then
      #Connection success!
      echo 1
+     exit 0
 else
      #Connection failure
      echo 0
+     exit 1
 fi
