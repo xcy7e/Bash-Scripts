@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# free virtual memory by closing all daemons / processes that commonly autostart
+# free virtual memory by closing all autostart daemons / processes
 
 USEDRAMMBBEFORE=$(free -m | awk 'NR==2{printf "%s", $3,$2,$3*100/$2 }')
 ##echo -e "$USEDRAMMBBEFORE"
