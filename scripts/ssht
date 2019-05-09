@@ -1,6 +1,6 @@
 #!/bin/bash
 
-		clear
+clear
 
 sudo mkdir -p /usr/share/ssht/ && sudo touch /usr/share/ssht/last_destination_ip && sudo touch /usr/share/ssht/last_port && sudo touch /usr/share/ssht/last_usr
 
