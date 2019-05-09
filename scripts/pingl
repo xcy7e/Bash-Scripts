@@ -1,4 +1,4 @@
 #!/bin/bash
-
 # ping on LAN iface
-ping -I enp4s0f1 $1
+IFACE="enp4s0f1"
+ping -I $IFACE $1
