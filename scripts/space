@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # show free disk space on specific partition
+
 echo -en "\e[94m\n"
 echo -en "\e[4m$                       TOTAL    USED  FREE     %       \e[0m\e[94m\n"
 echo -en "\e[1m"
