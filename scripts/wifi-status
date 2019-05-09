@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# check ap/rp's response to monitor availability
+
 iface="wlp3s0"
 
 AP1="10.0.0.11"
