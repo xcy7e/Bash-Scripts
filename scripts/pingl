@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# ping on LAN iface
+ping -I enp4s0f1 $1

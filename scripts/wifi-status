@@ -1,0 +1,56 @@
+#!/bin/bash
+
+iface="wlp3s0"
+
+AP1="10.0.0.11"
+AP2="10.0.0.12"
+RP1="10.0.0.21"
+RP2="10.0.0.22"
+RP3="10.0.0.23"
+
+#check hosts
+AP1_UP=$(/home/john/.scripts/check_host_up.sh $AP1 $iface)
+RP1_UP=$(/home/john/.scripts/check_host_up.sh $RP1 $iface)
+
+AP2_UP=$(/home/john/.scripts/check_host_up.sh $AP2 $iface)
+RP2_UP=$(/home/john/.scripts/check_host_up.sh $RP2 $iface)
+RP3_UP=$(/home/john/.scripts/check_host_up.sh $RP3 $iface)
+
+if [ "$AP1_UP" -eq "1" ]; then
+	AP1_STATUS="\e[92monline\e[0m"
+else
+	AP1_STATUS="\e[91moffline\e[0m"
+fi
+if [ "$RP1_UP" -eq "1" ]; then
+	RP1_STATUS="\e[92monline\e[0m"
+else
+	RP1_STATUS="\e[91moffline\e[0m"
+fi
+if [ "$AP2_UP" -eq "1" ]; then
+	AP2_STATUS="\e[92monline\e[0m"
+else
+	AP2_STATUS="\e[91moffline\e[0m"
+fi
+if [ "$RP2_UP" -eq "1" ]; then
+	RP2_STATUS="\e[92monline\e[0m"
+else
+	RP2_STATUS="\e[91moffline\e[0m"
+fi
+if [ "$RP3_UP" -eq "1" ]; then
+	RP3_STATUS="\e[92monline\e[0m"
+else
+	RP3_STATUS="\e[91moffline\e[0m"
+fi
+
+
+
+#display wifi status gvk
+echo -e "\n\t\e[4mWLAN STATUS\e[0m"
+echo -e "\t[AP-1] $AP1\e[2m...........\e[0m$AP1_STATUS"
+echo -e "\t[RP-1] $RP1\e[2m...........\e[0m$RP1_STATUS\n"
+
+echo -e "\t[AP-2] $AP2\e[2m...........\e[0m$AP2_STATUS"
+echo -e "\t[RP-2] $RP2\e[2m...........\e[0m$RP2_STATUS"
+echo -e "\t[RP-3] $RP3\e[2m...........\e[0m$RP3_STATUS\n\n"
+
+exit 0

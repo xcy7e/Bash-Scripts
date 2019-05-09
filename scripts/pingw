@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# ping on WLAN iface
+
+ping -I wlp3s0 $1
