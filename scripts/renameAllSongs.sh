@@ -1,9 +1,7 @@
 #!/bin/bash
 
-#
 # Rename song-files in current directory by meta info and save as *.mp3
 # e. g. "ACDC - Hihgway to hell.mp3"
-#
 
 clear
 echo -e "\e[1m\e[33mRename songs..\e[0m"
