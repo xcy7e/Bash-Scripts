@@ -1,0 +1,3 @@
+#!/bin/bash
+# show all scripts
+ls -lAgGC -1 /usr/local/scripts
