@@ -1,2 +1,2 @@
-# bash_scripts
+# bash scripts
 Written for and tested with Fedora 24 (Acer Chromebook 14)
