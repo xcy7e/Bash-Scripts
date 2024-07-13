@@ -1,0 +1,36 @@
+#!/bin/bash
+# +------------------------------------------------------------+
+#   REQUIRED TOOL: "glow"
+#   @see https://github.com/charmbracelet/glow
+# 
+#   cat markdown file in current directory (or specific file)
+# +------------------------------------------------------------+
+
+# help output (cmd --help | cmd help)
+if [ "$1" = "--help" ] | [ "$1" = "help" ]; then
+   echo -e "Usage:"
+   echo -e "\e[36mcmd\e[0m\e[90m           if dir contains only 1 markdown file\e[0m"
+   echo -e "\e[36mcmd file.md\e[0m\e[90m   if dir contains multiple markdown files\e[0m"
+   echo -e "\e[36mcmd help\e[0m\e[90m      show help\e[0m"
+   exit
+fi
+
+# Count .md-files in current dir
+MD_FILES=$(find -maxdepth 1 -type f -name "*.md"  | wc -l)
+
+# glow md-file if its the only one
+if [ "$MD_FILES" = "1" ]; then
+   # only 1 md file
+   glow *.md
+else
+   # if more md-files, rely on given filename
+   if [[ -z "$1" ]]; then
+      # required filename missing, print help
+      echo -e "\e[1mFilename missing!\e[0m\n"
+      cmd help
+      exit
+   else
+      # glow given md-file
+      glow "$1"
+   fi
+fi
