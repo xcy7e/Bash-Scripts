@@ -1,0 +1,24 @@
+#!/bin/bash
+# Add prefix to all elements in current directory
+
+PREFIX="$1"
+
+echo -e "\e[1mPrefix: \e[0m\e[47m\e[30m$PREFIX\e[0m"
+echo -en "\e[96mIs that prefix correct?\e[0m (y/\e[1mN\e[0m)?"
+read answer
+
+if [ "$answer" != "${answer#[YyJj]}" ] ;then
+    # Add Prefix
+    for f in * ; do mv -- "$f" "$PREFIX$f" ; done
+
+    echo -en "\n\e[96m\e[4mResult                                           \e[0m"
+
+    # List result
+    echo -e "\e[32m"
+    for n in *; do printf '%s\n' "$n"; done
+    echo -e "\e[0m"
+else
+    # Cancel
+    echo -e "\e[91mcancelled.\e[0m"
+    exit
+fi
