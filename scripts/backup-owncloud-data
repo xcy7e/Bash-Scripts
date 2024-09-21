@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# Backup Owncloud-Files of an owncloud-user
+# Keeps 1 backup-file per oc-user
+# Uses this Backup-Script: [MichaelYochpaz/Backup-Script](https://github.com/MichaelYochpaz/Backup-Script)
+
+USER="$1"
+if [ -z "$USER" ]; then
+    echo -e "\e[91mNo user specified.\e[0m"
+    exit 1
+fi
+
+###> Custom variables ###
+BACKUP_SCRIPT_PATH="/var/repos/Backup-Script"  # no trailing slash!
+BACKUPDIR="/backup/"
+BACKUPTARGET="/CLOUDPATH/data/$USER/files/"
+###< Custom variables ###
+
+BACKUPNAM="occ-data-$USER"
+PROMPTLN="................................"
+
+
+echo -e "\e[4m\e[36mBackup Owncloud data for user \e[96m\e[1m$USER\e[0m"
+# CHECK if target directory exists
+if [ ! -d "$BACKUPTARGET" ]; then
+    echo -e "\e[33mDirectory \e[93m$BACKUPTARGET\e[33m does not exist\e[0m"
+    exit 1
+fi
+
+
+# 1. CHECK available disk space considering size of backup target + 1GB
+prompt="1. Check for enough space"
+echo -en "$prompt${PROMPTLN:${#prompt}}"
+
+declare -i targetsize=$(du -s -B G "$BACKUPTARGET" | cut -f1 | sed 's/[^0-9]*//g')
+((targetsize++))	# +1 GB puffer
+
+if (($(df -B1 --output=avail "$BACKUPDIR" | tail -1)>=targetsize))
+then
+    echo -en "\e[92mOK\e[0m\n"
+else
+    echo -en "\e[91mFAILED\e[0m\n"
+    echo -e "\e[33mThere is \e[93mnot enough space\e[33m left on $BACKUPDIR! (Required: $targetsize GB)\e[0m"
+    exit 1
+fi
+
+
+# 2. REMOVE old backup files
+prompt="2. Remove old backup"
+echo -en "$prompt${PROMPTLN:${#prompt}}"
+rm -rf "$BACKUPDIR"occ-data-"$USER"*
+echo -en "\e[92mOK\e[0m\n"
+
+
+# 3. CREATE new backup
+prompt="3. Backup $USER's files"
+echo -en "$prompt${PROMPTLN:${#prompt}}"
+"$BACKUP_SCRIPT_PATH"/backup -y -n "occ-data-$USER" -s "$BACKUPDIR" "$BACKUPTARGET" > /dev/null
+echo -en "\e[92mOK\e[0m\n"
+
+
+# fin
+echo -e "done."
+exit 0
