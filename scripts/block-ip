@@ -1,0 +1,24 @@
+#!/bin/bash
+# iptables block ip address
+
+read -p "$(echo -e "Enter IP Address to block: \e[93m")" IP_ADDR
+echo -en "\e[0m"
+
+# Validate IP
+if [[ $IP_ADDR =~ ^(([1-9]?[0-9]|1[0-9][0-9]|2([0-4][0-9]|5[0-5]))\.){3}([1-9]?[0-9]|1[0-9][0-9]|2([0-4][0-9]|5[0-5]))$ ]]; then
+	# IP valid
+	read -p "$( echo -e "[\e[93m$IP_ADDR\e[0m] IP correct? (y/N)")" -n 1 -r
+else
+	# IP invalid
+	echo -e "\e[93m$IP_ADDR\e[0m \e[91mis not a valid IP address!\e[0m"
+	exit
+fi
+
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+	# block ip
+	sudo iptables -A INPUT -s "$IP_ADDR" -j DROP
+	echo -e "\e[95m$IP_ADDR blocked!\e[0m"
+else
+	echo -e "\e[91mcanceled.\e[0m"
+fi
