@@ -1,0 +1,38 @@
+#!/bin/bash
+# Import multiple SQL-files in a directory one-by-one
+# and print the progress
+# @author xcy7e
+# 
+# To import a huge dump, that has been split before using this script:
+# https://gist.github.com/jasny/1608062
+
+# Allow canceling the process with Ctrl+C
+trap "echo Exited!; exit;" SIGINT SIGTERM
+
+USR=dbuser
+PAS=dbpass
+DB="database_name"
+DIR="/var/dumps/$DB.tables"    # path to the single dump files
+
+IMPORT=0
+
+COUNT=$(ls "$DIR"/*.sql | wc -l) 
+
+echo -e "Import all dumps in $DIR\n"
+read -p "Process, importing all $COUNT tables into db $DB (y/N)?" choice
+case "$choice" in 
+  y|Y ) IMPORT=1;;
+esac
+
+i=0
+if [[ "$IMPORT" = 1 ]]; then
+        for eachFile in $( ls "$DIR"/*.sql ); 
+        do
+                i=$((i+1))
+                fNAM=${eachFile//"$DIR/"/}
+                echo -e "[$i/$COUNT] import $fNAM"
+                mysql -u $USR -p$PAS "$DB" < $eachFile 2>&1
+        done
+fi
+
+echo -e "fin.\n"
