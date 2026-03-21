@@ -1,0 +1,15 @@
+#!/bin/bash
+
+name="TheStand"
+
+# Case sensitivity: Off
+shopt -s nocaseglob
+
+ls | cat -n | while read n f; do mv "$f" `printf "%03d_$name.mp3" $n`; done
+
+# Case sensitivity: On
+shopt -u nocaseglob
+
+
+
+

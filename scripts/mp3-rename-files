@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# Alle Dateien im Verz. neu benennen und vorne nummerieren
+#--------------------------------------------------------------------------------------------------------
+# Anleitung:
+# 1. Script in jedem Unterverzeichnis ausführen mit dem "$name" "Teil_%cdNr%"
+#    Bsp: mp3-rename files 2
+#    (Zuvor die obere name-Variable einkommentieren)
+# 2. Alle Dateien aus den Unterverzeichnissen ins Elternverzeichnis holen (mp3-grab-all-into-current-dir)
+# 3. Script im Elternverzeichnis ausführen mit dem "$name" "Folge-$1"
+#    Bsp: mp3-rename-files
+#    (Zuvor die untere name-Variable einkommentieren)
+#--------------------------------------------------------------------------------------------------------
+
+
+
+#name="Teil_$1"		# Um alle Dateien einer Staffel zu benennen
+name="Folge"		# Um Dateien einer Folge zu benennen
+ext="mp3"
+#test=1			# Nicht umbennenen, nur ausgeben
+test=0			# Nicht umbennenen, nur ausgeben
+
+
+i=1
+for f in *; do
+	ii=$(printf "%03d" $i)		# Um alle Dateien einer Staffel zu benennen
+#	ii=$(printf "%02d" $i)		# Um Dateien einer Folge zu benennen
+	newfile=$(echo "$name""_""$ii"".""$ext")
+
+	if [ "$test" -eq "0" ]; then
+		mv "$f" "$newfile"
+	fi
+
+	echo "$newfile"
+	((i++))
+done
+
+echo -e "done."

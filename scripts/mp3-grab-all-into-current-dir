@@ -1,0 +1,10 @@
+#!/bin/bash
+# Holt alle MP3-Dateien aus allen Unterverzeichnissen in das aktuelle Verzeichnis
+
+# Case sensitivity: Off
+shopt -s nocaseglob
+
+mv */*.mp3 ./
+
+# Case sensitivity: On
+shopt -u nocaseglob

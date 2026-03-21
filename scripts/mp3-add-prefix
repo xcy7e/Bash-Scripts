@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Fügt allen MP3s im aktuellen Verzeichnis ein Prefix hinzu
+
+PREFIX="$1"
+
+# Case sensitivity: Off
+shopt -s nocaseglob
+
+for f in *.mp3 ; do mv -- "${f}" "${PREFIX}_${f}" ; done
+
+# Case sensitivity: On
+shopt -u nocaseglob

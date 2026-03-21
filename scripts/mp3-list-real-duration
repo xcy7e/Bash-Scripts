@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Zeigt die reale Dauer aller mp3's im aktuellen Verzeichnis
+
+DIR=$(pwd)
+
+echo -en "\n \e[4m\e[1mListe mp3s in $DIR\e[0m\n\n"
+
+find "$DIR" -type f -iname "*.mp3"  -printf "%f\n" | while read file; #-d $'\0' file;
+do
+  echo -en " \e[4m$file\e[0m\n"
+  echo -en " Duration: "
+  ffmpeg -i "$file" 2>&1 | grep Duration | sed 's/Duration: \(.*\), start/\1/g'
+  echo -en "\n"
+done
+
+echo -en " ---------------------------------------------------- \n"
+
+# SUMME
+echo -en " \e[4mSUMME:                                    "
+find "$DIR" -type f -iname "*.mp3"  -printf "%f\n" | while read file;
+do
+  ffprobe -v quiet -of csv=p=0 -show_entries format=duration "$file"
+done | awk '{sum += $1}; END{print sum}' | awk '{printf("%d:%02d:%02d:%02d\n",($1/60/60/24),($1/60/60%24),($1/60%60),($1%60))}'
+echo -en "\e[0m\n\n"

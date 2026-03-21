@@ -1,0 +1,39 @@
+#!/bin/bash
+# Fügt %n führende Nullen zu den Zählwerten aller Dateien hinzu
+#
+# Bsp: (1_foo.mp3, 15_foo.mp3, 300_foo.mp3)
+#    = (001_foo.mp3, 015_foo.mp3, 300_foo.mp3)
+#
+# Variablen vor dem ausführen anpassen!!!
+
+
+# rename 's/\d+/sprintf("%03d",$&)/e' *\ -\ Ruf\ zu\ den\ Waffen.mp3
+
+
+
+
+
+# Set RUN=1 to allow renaming
+RUN=1
+# total length (2-5)
+NBR_LENGTH=3
+# Escape values: (no quotes)
+FILENAME_BEFORE_NBR_SECTION=
+FILENAME_AFTER_NBR_SECTION=\ Teufel.mp3
+
+if [ "$RUN" -eq 0 ]; then
+   echo "Run aborted due to flag."
+   exit 0
+fi
+
+if [ "$NBR_LENGTH" -eq 2 ]; then
+   rename 's/\d+/sprintf("%02d",$&)/e' ${FILENAME_BEFORE_NBR_SECTION}*${FILENAME_AFTER_NBR_SECTION}
+elif [ "$NBR_LENGTH" -eq 3 ]; then
+   rename 's/\d+/sprintf("%03d",$&)/e' ${FILENAME_BEFORE_NBR_SECTION}*${FILENAME_AFTER_NBR_SECTION}
+elif [ "$NBR_LENGTH" -eq 4 ]; then
+   rename 's/\d+/sprintf("%04d",$&)/e' ${FILENAME_BEFORE_NBR_SECTION}*${FILENAME_AFTER_NBR_SECTION}
+elif [ "$NBR_LENGTH" -eq 5 ]; then
+   rename 's/\d+/sprintf("%05d",$&)/e' ${FILENAME_BEFORE_NBR_SECTION}*${FILENAME_AFTER_NBR_SECTION}
+else
+   echo "Invalid NBR_LENGTH $NBR_LENGTH"
+fi
