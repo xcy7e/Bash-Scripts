@@ -1,0 +1,8 @@
+#/bin/bash
+# converts all mp3-files in the CWD into one single M4B file, using the default list order
+# the resulting files 'list.txt' & 'output.mp3' may be deleted afterwards
+
+find . | grep "mp3" | awk '{printf "file |%s|\n", $0}' | sed -e "s/|/\'/g" > list.txt \
+  && ffmpeg -f concat -safe 0 -i list.txt -c copy output.mp3 \
+  && ffmpeg -i output.mp3 output.m4a \
+  && mv output.m4a output.m4b
