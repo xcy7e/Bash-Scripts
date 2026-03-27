@@ -1,2 +1,2 @@
 # bash scripts
-Written for and tested with Fedora 24 (Acer Chromebook 14)
+My personal script garage with all sorts of tools for various tasks.
